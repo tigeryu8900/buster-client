@@ -29,10 +29,8 @@ jobs:
         run: msys2do make GOOS=windows GOARCH=amd64 setup
       - name: Hash artifacts
         run: sha256sum dist/*
-        if: startsWith(github.ref, 'refs/tags/v')
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           name: buster-client-windows-amd64
           path: dist/
@@ -60,10 +58,8 @@ jobs:
         run: msys2do make GOOS=windows GOARCH=386 setup
       - name: Hash artifacts
         run: sha256sum dist/*
-        if: startsWith(github.ref, 'refs/tags/v')
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           name: buster-client-windows-386
           path: dist/
@@ -85,10 +81,8 @@ jobs:
         run: make GOOS=linux GOARCH=amd64 setup
       - name: Hash artifacts
         run: sha256sum dist/*
-        if: startsWith(github.ref, 'refs/tags/v')
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           name: buster-client-linux-amd64
           path: dist/
@@ -110,10 +104,8 @@ jobs:
         run: make GOOS=linux GOARCH=arm64 setup
       - name: Hash artifacts
         run: sha256sum dist/*
-        if: startsWith(github.ref, 'refs/tags/v')
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           name: buster-client-linux-arm64
           path: dist/
@@ -131,10 +123,8 @@ jobs:
         run: make GOOS=darwin GOARCH=amd64 setup
       - name: Hash artifacts
         run: shasum -a 256 dist/*
-        if: startsWith(github.ref, 'refs/tags/v')
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           name: buster-client-macos-arm64
           path: dist/
@@ -152,10 +142,8 @@ jobs:
         run: make GOOS=darwin GOARCH=arm64 setup
       - name: Hash artifacts
         run: shasum -a 256 dist/*
-        if: startsWith(github.ref, 'refs/tags/v')
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           name: buster-client-macos-arm64
           path: dist/
