@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build_windows_amd64:
     name: Build for Windows 64-bit
-    runs-on: windows-2019
+    runs-on: windows-2025
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -36,7 +36,7 @@ jobs:
           path: dist/
   build_windows_386:
     name: Build for Windows 32-bit
-    runs-on: windows-2019
+    runs-on: windows-2025
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
           path: dist/
   build_linux_amd64:
     name: Build for Linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -90,9 +90,34 @@ jobs:
         with:
           name: buster-client-linux-amd64
           path: dist/
+  build_linux_arm64:
+    name: Build for Linux
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.13.7'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev xorg-dev libxtst-dev libpng++-dev xcb libxcb-xkb-dev x11-xkb-utils libx11-xcb-dev libxkbcommon-x11-dev libxkbcommon-dev xsel xclip
+      - name: Build artifacts
+        run: make GOOS=linux GOARCH=arm64 setup
+      - name: Hash artifacts
+        run: sha256sum dist/*
+        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: buster-client-linux-arm64
+          path: dist/
   build_macos_amd64:
     name: Build for macOS
-    runs-on: macos-10.15
+    runs-on: macos-15-large
     steps:
       - name: Clone repository
         uses: actions/checkout@v2
@@ -109,11 +134,32 @@ jobs:
         uses: actions/upload-artifact@v1
         if: startsWith(github.ref, 'refs/tags/v')
         with:
-          name: buster-client-macos-amd64
+          name: buster-client-macos-arm64
+          path: dist/
+  build_macos_arm64:
+    name: Build for macOS
+    runs-on: macos-15
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.13.7'
+      - name: Build artifacts
+        run: make GOOS=darwin GOARCH=arm64 setup
+      - name: Hash artifacts
+        run: shasum -a 256 dist/*
+        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: buster-client-macos-arm64
           path: dist/
   release:
     name: Release on GitHub
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     needs:
       [
         build_windows_amd64,
